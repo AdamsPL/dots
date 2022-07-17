@@ -5,21 +5,20 @@ fi
 
 alias em="emacs -nw"
 alias nv="nvim -p"
-alias tm="tmux"
+alias tmux="tmux -2 -u"
+alias tm=tmux
 
 ZSH_THEME="ys"
 zstyle ':omz:update' mode reminder
 
 EDITOR=nvim
 VISUAL=$EDITOR
-ZSH_TMUX_FIXTERM_WITH_256COLOR=$TERM
 
 plugins=(
 	git
 	jira
 	python
 	themes
-	tmux
 	vi-mode
 	z
 )
