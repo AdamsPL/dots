@@ -30,7 +30,7 @@
   (unless (file-exists-p bootstrap-file)
     (with-current-buffer
 	(url-retrieve-synchronously
-	 "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+	 "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
 	 'silent 'inhibit-cookies)
       (goto-char (point-max))
       (eval-print-last-sexp)))
@@ -57,14 +57,21 @@
 :(straight-use-package 'evil-collection)
 (evil-collection-init)
 
-(straight-use-package 'vertico)
-(vertico-mode)
+(straight-use-package 'marginalia)
+(marginalia-mode)
+(straight-use-package 'ctrlf)
+(ctrlf-mode +1)
+
+(straight-use-package 'selectrum)
+(straight-use-package 'selectrum-prescient)
+(straight-use-package 'prescient)
+(selectrum-mode +1)
+(selectrum-prescient-mode +1)
+(prescient-persist-mode +1)
 
 (straight-use-package 'consult)
 (straight-use-package 'consult-lsp)
-
-(straight-use-package 'marginalia)
-(marginalia-mode)
+(recentf-mode +1)
 
 (straight-use-package 'company)
 (global-company-mode) 
@@ -93,11 +100,5 @@
 
 (require 'mouse)
 (xterm-mouse-mode t)
-
-(straight-use-package 'avy)
-;(global-set-key (kbd "C-'") 'avy-goto-char-2)
-;(avy-setup-default)
-;(global-set-key (kbd "C-c C-j") 'avy-resume)
-(global-set-key (kbd "C-'") 'avy-goto-char-2)
 
 (provide 'init)
