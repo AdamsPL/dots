@@ -4,11 +4,14 @@
 
 (setq package-enable-at-startup nil)
 
-; LOOK AND FEEL
 (setq inhibit-startup-screen t)
 (menu-bar-mode -1)
-(tool-bar-mode -1)
-(toggle-scroll-bar -1)
+(when (display-graphic-p)
+    (tool-bar-mode -1)
+    (toggle-scroll-bar -1))
+(require 'mouse)
+(xterm-mouse-mode t)
+
 (setq display-line-numbers-type 'relative)
 (global-display-line-numbers-mode)
 (setq backup-directory-alist '(("." . "~/.emacs/backup/")))
@@ -22,7 +25,6 @@
       `((".*" ,temporary-file-directory t)))
 (setq indent-tabs-mode nil)
 
-; PACKAGE MANAGER
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -49,56 +51,59 @@
 (setq undo-tree-visualizer-timestamps t)
 (global-undo-tree-mode)
 
-(straight-use-package 'evil)
-(setq evil-want-keybinding nil)
-(setq evil-undo-system 'undo-tree)
-(evil-mode t)
-
-:(straight-use-package 'evil-collection)
-(evil-collection-init)
-
 (straight-use-package 'marginalia)
 (marginalia-mode)
-(straight-use-package 'ctrlf)
-(ctrlf-mode +1)
 
-(straight-use-package 'selectrum)
-(straight-use-package 'selectrum-prescient)
+(straight-use-package 'vertico)
 (straight-use-package 'prescient)
-(selectrum-mode +1)
-(selectrum-prescient-mode +1)
-(prescient-persist-mode +1)
+(vertico-mode +1)
 
 (straight-use-package 'consult)
-(straight-use-package 'consult-lsp)
 (recentf-mode +1)
+(straight-use-package 'embark)
+(straight-use-package 'embark-consult)
+(add-hook 'embark-collect-mode 'consult-preview-at-point-mode)
 
 (straight-use-package 'company)
-(global-company-mode) 
+(global-company-mode)
 
 (straight-use-package 'haskell-mode)
-(straight-use-package 'lsp-mode)
-(straight-use-package 'lsp-ui)
-(setq lsp-lens-enable nil)
-(setq lsp-ui-sideline-show-diagnostics 1)
-(setq lsp-ui-sideline-show-code-actions 1)
-(add-hook 'c-mode-hook 'lsp)
-(add-hook 'c++-mode-hook 'lsp)
-(add-hook 'haskell-mode-hook 'lsp)
-(add-hook 'python-mode-hook 'lsp)
-
 (straight-use-package 'yasnippet)
-(yas-global-mode 1)
+(straight-use-package 'yasnippet-snippets)
+(yas-global-mode +1)
+
+(straight-use-package 'eglot)
+(add-hook 'c-mode-hook 'eglot-ensure)
+(add-hook 'c++-mode-hook 'eglot-ensure)
+(add-hook 'haskell-mode-hook 'eglot-ensure)
+(add-hook 'python-mode-hook 'eglot-ensure)
+(add-hook 'bash-mode-hook 'eglot-ensure)
 
 (straight-use-package 'magit)
-
 (straight-use-package 'git-gutter)
 (global-git-gutter-mode)
+(straight-use-package 'git-timemachine)
 
+(straight-use-package 'markdown-mode)
 (straight-use-package 'rainbow-mode)
-(rainbow-mode)
 
-(require 'mouse)
-(xterm-mouse-mode t)
+(straight-use-package 'evil)
+(straight-use-package 'evil-collection)
+(setq evil-want-keybinding nil)
+(setq evil-want-integration t)
+(setq evil-undo-system 'undo-tree)
+(evil-mode t)
+(evil-collection-init)
+
+(evil-set-leader 'normal (kbd "\\"))
+(evil-global-set-key 'normal (kbd "g e") 'eglot-find-declaration)
+(evil-global-set-key 'normal (kbd "g d") 'xref-find-definitions)
+(evil-global-set-key 'normal (kbd "g r") 'xref-find-references)
+(evil-global-set-key 'normal (kbd "g i") 'eglot-find-implementation)
+(evil-global-set-key 'normal (kbd "g t") 'eglot-find-typeDefinition)
+(evil-global-set-key 'normal (kbd "g c") (lambda () (interactive) (find-file "~/.emacs.d/init.el")))
+(evil-global-set-key 'normal (kbd "g o") (lambda () (interactive) (find-file "~/docs/todo.org")))
+(evil-global-set-key 'normal (kbd "<leader> e") 'consult-flymake)
+(evil-global-set-key 'normal (kbd "<leader> b") 'consult-buffer)
 
 (provide 'init)
