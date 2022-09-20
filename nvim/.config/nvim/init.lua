@@ -10,9 +10,6 @@ packer.startup(function(use)
     use 'RRethy/nvim-base16'
     use 'neovim/nvim-lspconfig'
     use 'hrsh7th/cmp-nvim-lsp'
-    --use 'hrsh7th/cmp-buffer'
-    --use 'hrsh7th/cmp-path'
-    --use 'hrsh7th/cmp-cmdline'
     use 'hrsh7th/nvim-cmp'
     use 'hrsh7th/cmp-nvim-lsp-signature-help'
 
@@ -23,14 +20,13 @@ packer.startup(function(use)
     use 'nvim-treesitter/nvim-treesitter'
     use 'nvim-treesitter/nvim-treesitter-textobjects'
 
-    use 'nvim-telescope/telescope.nvim'
-    use 'nvim-lua/plenary.nvim'
     use 'kyazdani42/nvim-web-devicons'
-    use 'folke/trouble.nvim'
+    use 'nvim-lua/plenary.nvim'
+    use 'nvim-telescope/telescope.nvim'
 
-    use 'rcarriga/nvim-notify'
     use 'lukas-reineke/indent-blankline.nvim'
     use 'numToStr/Comment.nvim'
+    use "AckslD/nvim-neoclip.lua"
 end)
 
 vim.g.termguicolors = true
@@ -41,7 +37,6 @@ vim.bo.tabstop = 4
 vim.bo.expandtab = true
 vim.cmd "colorscheme base16-chalk"
 
-vim.notify = require("notify")
 require("indent_blankline").setup {}
 require('Comment').setup {
     mappings = {
@@ -54,7 +49,6 @@ require('Comment').setup {
 local cmp = require 'cmp'
 local snippy = require 'snippy'
 local cmp_nvim_lsp = require 'cmp_nvim_lsp'
-local trouble = require 'trouble'
 
 local lspconfig = require 'lspconfig'
 cmp.setup({
@@ -75,10 +69,6 @@ cmp.setup({
         { name = 'snippy' },
         { name = 'nvim_lsp_signature_help' },
     }),
-    window = {
-        completion = cmp.config.window.bordered(),
-        documentation = cmp.config.window.bordered(),
-    },
 })
 local capabilities = cmp_nvim_lsp.update_capabilities(vim.lsp.protocol.make_client_capabilities())
 lspconfig.clangd.setup { capabilities = capabilities }
@@ -91,7 +81,7 @@ lspconfig.sumneko_lua.setup {
                 version = 'LuaJIT',
             },
             diagnostics = {
-                globals = {'vim'},
+                globals = { 'vim' },
             },
             workspace = {
                 library = vim.api.nvim_get_runtime_file("", true),
@@ -100,7 +90,7 @@ lspconfig.sumneko_lua.setup {
                 enable = false,
             },
         },
-  },
+    },
 }
 
 snippy.setup({
@@ -147,11 +137,56 @@ require 'nvim-treesitter.configs'.setup {
                 ['@class.outer'] = 'V', -- blockwise
                 ['@block.outer'] = 'V', -- blockwise
             },
-            include_surrounding_whitespace = true,
+            include_surrounding_whitespace = false,
         },
     },
 }
 
 local telescope = require 'telescope'
-telescope.setup()
-trouble.setup {}
+telescope.setup {}
+telescope.load_extension 'neoclip'
+require('neoclip').setup()
+
+local function key(mode, chord, fun)
+    vim.keymap.set(mode, chord, fun, { noremap = true, silent = true })
+end
+
+local function nkey(chord, fun)
+    key('n', chord, fun)
+end
+
+local function update()
+    vim.cmd('source $MYVIMRC')
+    vim.cmd('PackerUpdate')
+end
+
+local function list_workspace_folders()
+    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+end
+
+nkey('<Leader>f', require 'telescope.builtin'.oldfiles)
+nkey('<Leader>F', require 'telescope.builtin'.git_files)
+nkey('<Leader>b', require 'telescope.builtin'.buffers)
+nkey('<Leader>s', require 'telescope.builtin'.search_history)
+nkey('<Leader>p', '<Cmd>Telescope neoclip<CR>')
+nkey('<Leader>C', '<Cmd>tabedit $MYVIMRC<CR>')
+nkey('<Leader>U', update)
+
+nkey('gs', require 'telescope.builtin'.lsp_document_symbols)
+nkey('gD', vim.lsp.buf.declaration)
+nkey('gd', vim.lsp.buf.definition)
+nkey('gT', vim.lsp.buf.type_definition)
+nkey('K', vim.lsp.buf.hover)
+nkey('gi', vim.lsp.buf.implementation)
+nkey('gr', vim.lsp.buf.references)
+
+nkey('<space>wa', vim.lsp.buf.add_workspace_folder)
+nkey('<space>wr', vim.lsp.buf.remove_workspace_folder)
+nkey('<space>wl', list_workspace_folders)
+nkey('<space>rn', vim.lsp.buf.rename)
+nkey('<space>ca', vim.lsp.buf.code_action)
+nkey('<space>f', vim.lsp.buf.formatting)
+nkey('<space>e', vim.diagnostic.open_float)
+nkey('[d', vim.diagnostic.goto_prev)
+nkey(']d', vim.diagnostic.goto_next)
+nkey('<space>q', vim.diagnostic.setloclist)
