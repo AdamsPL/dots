@@ -27,6 +27,7 @@ packer.startup(function(use)
     use 'lukas-reineke/indent-blankline.nvim'
     use 'numToStr/Comment.nvim'
     use "AckslD/nvim-neoclip.lua"
+    use 'sindrets/diffview.nvim'
 end)
 
 vim.g.termguicolors = true
@@ -169,6 +170,12 @@ nkey('<Leader>F', require 'telescope.builtin'.git_files)
 nkey('<Leader>b', require 'telescope.builtin'.buffers)
 nkey('<Leader>s', require 'telescope.builtin'.search_history)
 nkey('<Leader>p', '<Cmd>Telescope neoclip<CR>')
+
+nkey('<Leader>dq', '<Cmd>DiffviewClose<CR>')
+nkey('<Leader>dr', '<Cmd>DiffviewRefresh<CR>')
+nkey('<Leader>dh', '<Cmd>DiffviewFileHistory<CR>')
+nkey('<Leader>do', '<Cmd>DiffviewOpen<CR>')
+
 nkey('<Leader>C', '<Cmd>tabedit $MYVIMRC<CR>')
 nkey('<Leader>U', update)
 
