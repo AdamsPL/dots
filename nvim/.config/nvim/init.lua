@@ -4,8 +4,7 @@ if fn.empty(fn.glob(install_path)) > 0 then
     fn.system({ 'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path })
 end
 
-local packer = require('packer')
-packer.startup(function(use)
+require'packer'.startup(function(use)
     use 'wbthomason/packer.nvim'
     use 'RRethy/nvim-base16'
     use 'neovim/nvim-lspconfig'
@@ -28,14 +27,18 @@ packer.startup(function(use)
     use 'numToStr/Comment.nvim'
     use "AckslD/nvim-neoclip.lua"
     use 'sindrets/diffview.nvim'
+
+    use 'preservim/vimux'
+    use 'nvim-lualine/lualine.nvim'
 end)
 
 vim.g.termguicolors = true
 vim.o.relativenumber = true
 vim.o.signcolumn = 'yes'
-vim.bo.shiftwidth = 4
-vim.bo.tabstop = 4
-vim.bo.expandtab = true
+vim.o.shiftwidth = 4
+vim.o.tabstop = 4
+vim.o.expandtab = true
+vim.o.cursorline = true
 vim.cmd "colorscheme base16-chalk"
 
 require("indent_blankline").setup {}
@@ -93,6 +96,7 @@ lspconfig.sumneko_lua.setup {
         },
     },
 }
+lspconfig.hls.setup {}
 
 snippy.setup({
     mappings = {
@@ -146,7 +150,12 @@ require 'nvim-treesitter.configs'.setup {
 local telescope = require 'telescope'
 telescope.setup {}
 telescope.load_extension 'neoclip'
-require('neoclip').setup()
+require('neoclip').setup {}
+require('lualine').setup {
+	options = {
+		theme = 'base16'
+	}
+}
 
 local function key(mode, chord, fun)
     vim.keymap.set(mode, chord, fun, { noremap = true, silent = true })
@@ -182,7 +191,7 @@ nkey('<Leader>U', update)
 nkey('gs', require 'telescope.builtin'.lsp_document_symbols)
 nkey('gD', vim.lsp.buf.declaration)
 nkey('gd', vim.lsp.buf.definition)
-nkey('gT', vim.lsp.buf.type_definition)
+nkey('gy', vim.lsp.buf.type_definition)
 nkey('K', vim.lsp.buf.hover)
 nkey('gi', vim.lsp.buf.implementation)
 nkey('gr', vim.lsp.buf.references)
