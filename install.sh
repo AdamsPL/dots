@@ -1,4 +1,4 @@
 #!/bin/bash
 
 cd $(dirname $(readlink -f $0))
-stow -v -t ${HOME} $* $(ls -d */ | tr -d '/')
+stow -vv --adopt -t ${HOME} -R $(ls -d */ | tr -d '/')
