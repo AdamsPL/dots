@@ -78,6 +78,7 @@
   (setq completion-styles '(basic substring flex))
   (setq eldoc-echo-area-use-multiline-p nil)
   (setq read-extended-command-predicate #'command-completion-default-include-p)
+  (setq vc-follow-symlinks t)
   (set-display-table-slot standard-display-table 5 ?│)
   (toggle-frame-maximized))
 
