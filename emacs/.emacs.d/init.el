@@ -1,4 +1,4 @@
-;; -*- lexical-binding: t; -*-
+;; -*- lexical-binding:t -*-
 
 (defvar bootstrap-version)
 (let ((bootstrap-file
@@ -43,21 +43,16 @@
   (treesit-auto-add-to-auto-mode-alist 'all)
   (global-treesit-auto-mode))
 
-(use-package lsp-mode
-  :hook (prog-mode . lsp)
-  :config (setq lsp-warn-no-matched-clients nil))
-
-(use-package lsp-ui)
-
-(use-package flycheck)
-
-(use-package company
-  :hook (prog-mode . company-mode))
-
 (use-package yasnippet
   :config (yas-global-mode))
 
+(use-package eglot
+  :hook (prog-mode . eglot-ensure))
+
 (use-package dape)
+
+(use-package company
+  :config (global-company-mode t))
 
 (use-package geiser-guile)
 
@@ -66,7 +61,6 @@
 (use-package emacs
   :hook
   (prog-mode . display-line-numbers-mode)
-  (prog-mode . hl-line-mode)
   (prog-mode . electric-pair-mode)
   :config
   (recentf-mode 1)
@@ -91,10 +85,14 @@
 (use-package org
   :config
   (setq org-hide-emphasis-markers t
-        org-pretty-entities t))
+        org-pretty-entities t
+        org-confirm-babel-evaluate nil)
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((python . t))))
 
-(use-package org-bullets
-  :hook (org-mode org-bullets-mode))
+;(use-package hyperbole
+;  :config (hyperbole-mode))
 
 (use-package evil
  :config
@@ -121,12 +119,14 @@
 
 (use-package avy
   :bind ("C-;" . 'avy-goto-char-timer))
+
 (use-package ace-window
   :bind ("M-o" . 'ace-window))
 
 (use-package vertico
   :config
   (vertico-mode))
+
 (use-package marginalia
   :config (marginalia-mode 1))
 
@@ -137,3 +137,5 @@
 
 (use-package which-key
   :config (which-key-mode))
+
+(use-package sly)
