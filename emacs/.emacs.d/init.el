@@ -1,53 +1,36 @@
 ;; -*- lexical-binding:t -*-
 
-(defvar bootstrap-version)
-(let ((bootstrap-file
-       (expand-file-name
-        "straight/repos/straight.el/bootstrap.el"
-        (or (bound-and-true-p straight-base-dir)
-            user-emacs-directory)))
-      (bootstrap-version 7))
-  (unless (file-exists-p bootstrap-file)
-    (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
-      (goto-char (point-max))
-      (eval-print-last-sexp)))
-  (load bootstrap-file nil 'nomessage))
-
-(use-package straight
+(use-package emacs
+  :hook
+  (prog-mode . display-line-numbers-mode)
+  (prog-mode . electric-pair-mode)
   :config
-  (setq straight-use-package-by-default t)
-  (setq straight-vc-git-default-clone-depth 1))
-
-(use-package modus-themes
-  :demand t
-  :config
-  (setq modus-themes-common-palette-overrides
-        '((border-mode-line-active unspecified)
-          (border-mode-line-inactive unspecified)))
-  (load-theme 'modus-vivendi t))
-
- (use-package mood-line
-   :config
-   (setq mood-line-glyph-alist mood-line-glyphs-fira-code)
-   (mood-line-mode 1))
+  (recentf-mode 1)
+  (global-auto-revert-mode)
+  (repeat-mode)
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+  (setq-default tab-width 4)
+  (setq-default indent-tabs-mode nil)
+  (setq use-short-answers t)
+  (setq completion-styles '(basic substring flex))
+  (setq eldoc-echo-area-use-multiline-p nil)
+  (setq read-extended-command-predicate #'command-completion-default-include-p)
+  (setq vc-follow-symlinks t)
+  (setq major-mode-remap-alist
+        '((python-mode . python-ts-mode)
+          (c-mode . c-ts-mode)
+          (c++-mode . c++-ts-mode)
+          (bash-mode . bash-ts-mode)
+          (rust-mode . rust-ts-mode)))
+  (set-display-table-slot standard-display-table 5 ?│)
+  (toggle-frame-maximized))
 
 (use-package use-package
   :init
  (setq use-package-always-ensure t))
 
-(use-package treesit-auto
-  :config
-  (treesit-auto-add-to-auto-mode-alist 'all)
-  (global-treesit-auto-mode))
-
-(use-package yasnippet
-  :config (yas-global-mode))
-
-(use-package eglot
-  :hook (prog-mode . eglot-ensure))
+(use-package ef-themes
+  :config (load-theme 'ef-dark t))
 
 (use-package dape)
 
@@ -57,24 +40,6 @@
 (use-package geiser-guile)
 
 (use-package haskell-mode)
-
-(use-package emacs
-  :hook
-  (prog-mode . display-line-numbers-mode)
-  (prog-mode . electric-pair-mode)
-  :config
-  (recentf-mode 1)
-  (global-auto-revert-mode)
-  (repeat-mode)
-  (setq-default tab-width 4)
-  (setq-default indent-tabs-mode nil)
-  (setq use-short-answers t)
-  (setq completion-styles '(basic substring flex))
-  (setq eldoc-echo-area-use-multiline-p nil)
-  (setq read-extended-command-predicate #'command-completion-default-include-p)
-  (setq vc-follow-symlinks t)
-  (set-display-table-slot standard-display-table 5 ?│)
-  (toggle-frame-maximized))
 
 (use-package magit)
 
@@ -91,13 +56,10 @@
    'org-babel-load-languages
    '((python . t))))
 
-;(use-package hyperbole
-;  :config (hyperbole-mode))
-
 (use-package evil
  :config
- (evil-set-undo-system 'undo-redo)
  (setq evil-default-state 'emacs)
+ (evil-set-undo-system 'undo-redo)
  (evil-set-initial-state 'prog-mode 'normal)
  (evil-mode 1))
 
@@ -138,4 +100,10 @@
 (use-package which-key
   :config (which-key-mode))
 
-(use-package sly)
+(use-package yasnippet)
+
+(use-package eglot
+  :hook (python-ts-mode . eglot-ensure)
+  (c-ts-mode . eglot-ensure)
+  (haskell-mode . eglot-ensure)
+  :config (setq eglot-report-progress nil))

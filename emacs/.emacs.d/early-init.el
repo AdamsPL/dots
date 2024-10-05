@@ -1,6 +1,5 @@
 ;; -*- lexical-binding:t -*-
 
-(setq package-enable-at-startup nil)
 (setq gc-cons-threshold (* 32 1024 1024))
 
 (setq custom-file "~/.emacs.d/custom.el")
@@ -20,5 +19,6 @@
 
 (set-face-attribute 'default nil :height 120)
 (menu-bar-mode 0)
-(tool-bar-mode 0)
-(scroll-bar-mode 0)
+(when window-system
+  (tool-bar-mode 0)
+  (scroll-bar-mode 0))
