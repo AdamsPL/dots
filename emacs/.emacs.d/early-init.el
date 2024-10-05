@@ -19,6 +19,6 @@
 
 (set-face-attribute 'default nil :height 120)
 (menu-bar-mode 0)
-(when window-system
+(when initial-window-system
   (tool-bar-mode 0)
   (scroll-bar-mode 0))
