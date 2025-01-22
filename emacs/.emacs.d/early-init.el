@@ -25,6 +25,5 @@
 (when initial-window-system
   (tool-bar-mode 0)
   (scroll-bar-mode 0))
-  (set-face-attribute )
   (set-face-attribute 'default nil :font "Inconsolata Nerd Font Mono" :height 120)
 
