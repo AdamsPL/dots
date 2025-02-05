@@ -14,7 +14,7 @@
 (setq read-extended-command-predicate #'command-completion-default-include-p)
 (setq vc-follow-symlinks t)
 (setq major-mode-remap-alist
-    '((python-mode . python-ts-mode)
+      '((python-mode . python-ts-mode)
         (c-mode . c-ts-mode)
         (c++-mode . c++-ts-mode)
         (bash-mode . bash-ts-mode)
@@ -90,6 +90,7 @@
 
 (use-package lsp-mode
   :hook (prog-mode . #'lsp-defered)
+  :config (setq lsp-enable-suggest-server-download nil)
   )
 (use-package lsp-ui :commands lsp-ui-mode)
 (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
@@ -105,9 +106,6 @@
 
 (use-package spacious-padding
   :config
-  ;; (setq spacious-padding-subtle-mode-line
-  ;;     `( :mode-line-active 'default
-  ;;        :mode-line-inactive vertical-border))
   (spacious-padding-mode))
 
 (use-package git-gutter
@@ -146,16 +144,34 @@
   (setq undo-tree-history-directory-alist '(("." . "/tmp/emacs/undo")))
   (global-undo-tree-mode +1))
 
-(use-package all-the-icons)
+(use-package nerd-icons)
+(use-package nerd-icons-dired
+  :hook
+  (dired-mode . nerd-icons-dired-mode))
+(use-package nerd-icons-completion
+  :after marginalia
+  :config
+  (nerd-icons-completion-mode)
+  (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
 
 (use-package doom-themes
-  :ensure t
   :config
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
         doom-themes-enable-italic t) ; if nil, italics is universally disabled
   (load-theme 'doom-tokyo-night t)
-  ;(doom-themes-visual-bell-config)
   (doom-themes-neotree-config)
   (setq doom-themes-treemacs-theme "doom-atom")
   (doom-themes-treemacs-config)
   (doom-themes-org-config))
+
+(use-package doom-modeline
+  :config (doom-modeline-mode 1))
+
+(use-package highlight-indent-guides)
+
+(use-package ediff
+  :ensure t
+  :config
+  (setq ediff-keep-variants nil
+        ediff-split-window-function 'split-window-horizontally
+        ediff-window-setup-function 'ediff-setup-windows-plain))
