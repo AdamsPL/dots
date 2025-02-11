@@ -110,8 +110,10 @@
   :config
   (spacious-padding-mode))
 
-(use-package git-gutter
-  :config (global-git-gutter-mode +1))
+(use-package diff-hl
+  :config
+  (diff-hl-margin-mode)
+  (global-diff-hl-mode))
 
 (use-package evil
   :ensure t
