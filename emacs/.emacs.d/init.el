@@ -33,14 +33,9 @@
   (prog-mode . display-line-numbers-mode)
   (prog-mode . electric-pair-mode))
 
-(use-package use-package
-  :init
- (setq use-package-always-ensure t))
-
 (use-package company
-  :config (global-company-mode t))
-
-(use-package haskell-mode)
+  :config
+  (global-company-mode t))
 
 (use-package magit)
 
@@ -90,7 +85,8 @@
 
 (use-package lsp-mode
   :hook (prog-mode . #'lsp-defered)
-  )
+  :config
+  (setq lsp-copilot-enabled nil))
 (use-package lsp-ui :commands lsp-ui-mode)
 (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
 (use-package flycheck)
@@ -146,7 +142,8 @@
   (setq undo-tree-history-directory-alist '(("." . "/tmp/emacs/undo")))
   (global-undo-tree-mode +1))
 
-(use-package all-the-icons)
+(use-package nerd-icons)
+(use-package nerd-icons-dired)
 
 (use-package doom-themes
   :ensure t
