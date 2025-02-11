@@ -1,6 +1,7 @@
 ;; -*- lexical-binding:t -*-
 
-(setq gc-cons-threshold (* 32 1024 1024))
+(setq gc-cons-threshold (* 128 1024 1024))
+(setq package-enable-at-startup nil)
 
 (setq inhibit-startup-message t)
 (setq initial-scratch-message nil)
