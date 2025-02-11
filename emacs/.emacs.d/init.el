@@ -30,7 +30,7 @@
 
 (setq vc-follow-symlinks t)
 (setq major-mode-remap-alist
-    '((python-mode . python-ts-mode)
+      '((python-mode . python-ts-mode)
         (c-mode . c-ts-mode)
         (c++-mode . c++-ts-mode)
         (bash-mode . bash-ts-mode)
@@ -103,9 +103,13 @@
 (use-package lsp-mode
   :hook (prog-mode . #'lsp-defered)
   :config
-  (setq lsp-copilot-enabled nil))
+  (setq lsp-copilot-enabled nil)
+  (setq lsp-enable-suggest-server-download nil))
+
 (use-package lsp-ui :commands lsp-ui-mode)
-(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+(use-package treemacs-nerd-icons
+  :config
+  (treemacs-load-theme "nerd-icons"))
 (use-package flycheck)
 
 ;; (use-package eglot
@@ -118,13 +122,12 @@
 
 (use-package spacious-padding
   :config
-  ;; (setq spacious-padding-subtle-mode-line
-  ;;     `( :mode-line-active 'default
-  ;;        :mode-line-inactive vertical-border))
   (spacious-padding-mode))
 
-(use-package git-gutter
-  :config (global-git-gutter-mode +1))
+(use-package diff-hl
+  :config
+  (diff-hl-margin-mode)
+  (global-diff-hl-mode))
 
 (use-package evil
   :ensure t
@@ -160,13 +163,43 @@
   (global-undo-tree-mode +1))
 
 (use-package nerd-icons)
-(use-package nerd-icons-dired)
+
+(use-package nerd-icons-dired
+  :hook
+  (dired-mode . nerd-icons-dired-mode))
+
+(use-package nerd-icons-completion
+  :after marginalia
+  :config
+  (nerd-icons-completion-mode)
+  (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
 
 (use-package doom-themes
-  :ensure t
   :config
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
         doom-themes-enable-italic t) ; if nil, italics is universally disabled
   (load-theme 'doom-tokyo-night t)
+  (doom-themes-neotree-config)
   (setq doom-themes-treemacs-theme "doom-atom")
   (doom-themes-org-config))
+
+(use-package doom-modeline
+  :config (doom-modeline-mode 1))
+
+(use-package highlight-indent-guides)
+
+(use-package ediff
+  :ensure t
+  :config
+  (setq ediff-keep-variants nil
+        ediff-split-window-function 'split-window-horizontally
+        ediff-window-setup-function 'ediff-setup-windows-plain))
+
+(use-package helpful
+  :config
+  (global-set-key (kbd "C-h f") #'helpful-callable)
+  (global-set-key (kbd "C-h v") #'helpful-variable)
+  (global-set-key (kbd "C-h k") #'helpful-key)
+  (global-set-key (kbd "C-h x") #'helpful-command)
+  (global-set-key (kbd "C-c C-d") #'helpful-at-point)
+  (global-set-key (kbd "C-h F") #'helpful-function))
