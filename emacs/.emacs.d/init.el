@@ -93,7 +93,9 @@
   :config (setq lsp-enable-suggest-server-download nil)
   )
 (use-package lsp-ui :commands lsp-ui-mode)
-(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+(use-package treemacs-nerd-icons
+  :config
+  (treemacs-load-theme "nerd-icons"))
 (use-package flycheck)
 
 ;; (use-package eglot
