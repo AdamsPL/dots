@@ -44,17 +44,20 @@
 (global-auto-revert-mode)
 (global-visual-line-mode t)
 (repeat-mode)
+(winner-mode)
 
 (use-package emacs
   :hook
   (prog-mode . display-line-numbers-mode)
   (prog-mode . electric-pair-mode))
 
+(use-package eglot
+  :hook
+  (python-mode . eglot-ensure))
+
 (use-package company
   :config
   (global-company-mode t))
-
-(use-package magit)
 
 (use-package eat
   :hook
@@ -72,12 +75,6 @@
 (use-package savehist
   :config (savehist-mode))
 
-(use-package avy
-  :bind ("C-;" . 'avy-goto-char-timer))
-
-(use-package ace-window
-  :bind ("M-o" . 'ace-window))
-
 (use-package vertico
   :config
   (keymap-set vertico-map "C-j" #'vertico-exit-input)
@@ -86,43 +83,15 @@
 (use-package marginalia
   :config (marginalia-mode 1))
 
-(use-package projectile
-  :config
-  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-  (projectile-mode +1))
-
 (use-package which-key
   :config (which-key-mode))
 
 (use-package yasnippet
   :config
   (yas-global-mode))
-
 (use-package yasnippet-snippets)
 
-(use-package lsp-mode
-  :hook (prog-mode . #'lsp-defered)
-  :config
-  (setq lsp-copilot-enabled nil)
-  (setq lsp-enable-suggest-server-download nil))
-
-(use-package lsp-ui :commands lsp-ui-mode)
-(use-package treemacs-nerd-icons
-  :config
-  (treemacs-load-theme "nerd-icons"))
-(use-package flycheck)
-
-;; (use-package eglot
-;;   :hook
-;;   (python-ts-mode . eglot-ensure))
-
-(use-package mood-line
-  :config
-  (mood-line-mode))
-
-(use-package spacious-padding
-  :config
-  (spacious-padding-mode))
+(use-package magit)
 
 (use-package diff-hl
   :config
@@ -132,30 +101,24 @@
 (use-package evil
   :ensure t
   :init
-  (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
+  (setq evil-want-integration t)
   (setq evil-want-keybinding nil)
   (setq evil-undo-system 'undo-tree)
   :config
   (evil-mode 1))
-
 (use-package evil-collection
   :after evil
   :ensure t
   :config
   (evil-collection-init))
-
 (use-package evil-surround
   :ensure t
   :config
   (global-evil-surround-mode 1))
-
 (use-package evil-commentary
   :config
   (evil-commentary-mode +1))
-
 (use-package evil-textobj-tree-sitter)
-
-(use-package treemacs-evil)
 
 (use-package undo-tree
   :config
@@ -163,7 +126,6 @@
   (global-undo-tree-mode +1))
 
 (use-package nerd-icons)
-
 (use-package nerd-icons-dired
   :hook
   (dired-mode . nerd-icons-dired-mode))
@@ -180,16 +142,14 @@
         doom-themes-enable-italic t) ; if nil, italics is universally disabled
   (load-theme 'doom-tokyo-night t)
   (doom-themes-neotree-config)
-  (setq doom-themes-treemacs-theme "doom-atom")
   (doom-themes-org-config))
 
 (use-package doom-modeline
-  :config (doom-modeline-mode 1))
-
-(use-package highlight-indent-guides)
+  :config
+  (setq doom-modeline-height 1)
+  (doom-modeline-mode 1))
 
 (use-package ediff
-  :ensure t
   :config
   (setq ediff-keep-variants nil
         ediff-split-window-function 'split-window-horizontally
@@ -203,3 +163,11 @@
   (global-set-key (kbd "C-h x") #'helpful-command)
   (global-set-key (kbd "C-c C-d") #'helpful-at-point)
   (global-set-key (kbd "C-h F") #'helpful-function))
+
+(use-package sideline-lsp)
+(use-package sideline-flymake)
+(use-package sideline
+  :hook (flymake-mode . sideline-mode)
+  :init
+  (setq sideline-backends-right '((sideline-flymake . up)
+                                  (sideline-lsp . down))))
