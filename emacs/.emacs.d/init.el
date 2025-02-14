@@ -43,6 +43,7 @@
 
 (setq isearch-wrap-pause 'no)
 (setq split-height-threshold 200)
+(setq isearch-lazy-count t)
 (toggle-frame-maximized)
 (load custom-file)
 (recentf-mode 1)
@@ -104,20 +105,23 @@
   (global-diff-hl-mode))
 
 (use-package evil
-  :ensure t
+  :after move-text
   :init
   (setq evil-want-integration t)
   (setq evil-want-keybinding nil)
   (setq evil-undo-system 'undo-tree)
+  (setq evil-search-module 'isearch)
   :config
+  (evil-define-key nil 'global (kbd "<leader>c") 'evil-commentary-line)
+  (evil-define-key nil 'global (kbd "M-j") 'move-text-down)
+  (evil-define-key nil 'global (kbd "M-k") 'move-text-up)
   (evil-mode 1))
 (use-package evil-collection
   :after evil
-  :ensure t
   :config
   (evil-collection-init))
+  (evil-set-leader '(normal visual) (kbd "SPC"))
 (use-package evil-surround
-  :ensure t
   :config
   (global-evil-surround-mode 1))
 (use-package evil-commentary
@@ -176,3 +180,5 @@
   :init
   (setq sideline-backends-right '((sideline-flymake . up)
                                   (sideline-lsp . down))))
+
+(use-package move-text)
