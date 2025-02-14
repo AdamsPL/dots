@@ -1,4 +1,9 @@
 ;; -*- lexical-binding:t -*-
+(menu-bar-mode 0)
+(when (display-graphic-p)
+  (tool-bar-mode 0)
+  (scroll-bar-mode 0)
+  (set-face-attribute 'default nil :font "Inconsolata Nerd Font Mono" :height 110))
 
 (defvar bootstrap-version)
 (let ((bootstrap-file

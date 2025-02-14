@@ -21,9 +21,3 @@
 
 (setq load-prefer-newer t)
 (setq native-comp-jit-compilation t)
-
-(menu-bar-mode 0)
-(when initial-window-system
-  (tool-bar-mode 0)
-  (scroll-bar-mode 0)
-  (set-face-attribute 'default nil :font "Inconsolata Nerd Font Mono" :height 110))
