@@ -4,26 +4,14 @@
   (tool-bar-mode 0)
   (scroll-bar-mode 0)
   (set-face-attribute 'default nil :font "Inconsolata Nerd Font Mono" :height 110))
+  (toggle-frame-maximized)
 
-(defvar bootstrap-version)
-(let ((bootstrap-file
-       (expand-file-name
-        "straight/repos/straight.el/bootstrap.el"
-        (or (bound-and-true-p straight-base-dir)
-            user-emacs-directory)))
-      (bootstrap-version 7))
-  (unless (file-exists-p bootstrap-file)
-    (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
-      (goto-char (point-max))
-      (eval-print-last-sexp)))
-  (load bootstrap-file nil 'nomessage))
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(package-initialize)
 
-(straight-use-package 'use-package)
-(setq straight-vc-git-default-clone-depth 1)
-(setq straight-use-package-by-default t)
+(require 'use-package)
+(setq use-package-always-ensure t)
 
 (setq native-comp-async-query-on-exit t)
 (setq confirm-kill-processes t)
@@ -32,7 +20,6 @@
 (setq use-short-answers t)
 (setq completion-styles '(basic substring flex))
 (setq read-extended-command-predicate #'command-completion-default-include-p)
-
 (setq vc-follow-symlinks t)
 (setq major-mode-remap-alist
       '((python-mode . python-ts-mode)
@@ -40,11 +27,10 @@
         (c++-mode . c++-ts-mode)
         (bash-mode . bash-ts-mode)
         (rust-mode . rust-ts-mode)))
-
 (setq isearch-wrap-pause 'no)
 (setq split-height-threshold 200)
 (setq isearch-lazy-count t)
-(toggle-frame-maximized)
+
 (load custom-file)
 (recentf-mode 1)
 (global-auto-revert-mode)
@@ -59,7 +45,7 @@
 
 (use-package eglot
   :hook
-  (python-mode . eglot-ensure))
+  (python-ts-mode . eglot-ensure))
 
 (use-package company
   :config
@@ -105,22 +91,23 @@
   (global-diff-hl-mode))
 
 (use-package evil
-  :after move-text
   :init
   (setq evil-want-integration t)
   (setq evil-want-keybinding nil)
   (setq evil-undo-system 'undo-tree)
   (setq evil-search-module 'isearch)
   :config
+  (evil-set-leader '(normal visual) (kbd "SPC"))
   (evil-define-key nil 'global (kbd "<leader>c") 'evil-commentary-line)
-  (evil-define-key nil 'global (kbd "M-j") 'move-text-down)
-  (evil-define-key nil 'global (kbd "M-k") 'move-text-up)
+  (evil-define-key nil 'global (kbd "<leader>q") 'flymake-show-buffer-diagnostics)
+  (evil-define-key nil 'global (kbd "<leader>v") 'eval-region)
+  (evil-define-key nil 'global (kbd "M-j") 'evil-collection-unimpaired-move-text-down)
+  (evil-define-key nil 'global (kbd "M-k") 'evil-collection-unimpaired-move-text-up)
   (evil-mode 1))
 (use-package evil-collection
   :after evil
   :config
   (evil-collection-init))
-  (evil-set-leader '(normal visual) (kbd "SPC"))
 (use-package evil-surround
   :config
   (global-evil-surround-mode 1))
@@ -164,21 +151,10 @@
         ediff-split-window-function 'split-window-horizontally
         ediff-window-setup-function 'ediff-setup-windows-plain))
 
-(use-package helpful
-  :config
-  (global-set-key (kbd "C-h f") #'helpful-callable)
-  (global-set-key (kbd "C-h v") #'helpful-variable)
-  (global-set-key (kbd "C-h k") #'helpful-key)
-  (global-set-key (kbd "C-h x") #'helpful-command)
-  (global-set-key (kbd "C-c C-d") #'helpful-at-point)
-  (global-set-key (kbd "C-h F") #'helpful-function))
-
-(use-package sideline-lsp)
 (use-package sideline-flymake)
 (use-package sideline
   :hook (flymake-mode . sideline-mode)
   :init
-  (setq sideline-backends-right '((sideline-flymake . up)
-                                  (sideline-lsp . down))))
+  (setq sideline-backends-right '(sideline-flymake)))
 
-(use-package move-text)
+(use-package haskell-mode)
